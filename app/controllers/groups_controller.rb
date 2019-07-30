@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy, :quit, :join]
   before_action :find_group_and_check_permission , only: [:edit, :update, :destroy]
 
   def index
@@ -42,7 +42,30 @@ class GroupsController < ApplicationController
 
     redirect_to groups_path
   end
-  
+
+  def join
+    @group=Group.find(params[:id])
+    if !current_user.is_member_of?(@group)
+        current_user.join!(@group)
+        flash[:notice]="成功加入板块！"
+    else
+      flash[:notice]="你已经是板块成员了！"
+    end
+
+    redirect_to(@group)
+  end  
+
+  def quit
+     @group=Group.find(params[:id])
+     if current_user.is_member_of?(@group)
+        current_user.quit!(@group)
+        flash[:notice]="成功推出该板块！"
+     else
+        flash[:notice]="你不是改板块成员！"
+     end
+
+     redirect_to(@group)
+  end
   private
     def group_params
       params.require(:group).permit(:title,:description)
