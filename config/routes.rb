@@ -13,5 +13,6 @@ end
     resources :groups
     resources :posts
   end
+  
  root 'groups#index'
 end

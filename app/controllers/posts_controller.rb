@@ -17,6 +17,28 @@ class PostsController < ApplicationController
     end
   end
 
+  def edit
+    @group = Group.find(params[:group_id])
+    @post=@group.posts.find(params[:id])
+  end
+
+  def update
+    @group = Group.find(params[:group_id])
+    @post=@group.posts.find(params[:id])
+    if @post.update_attributes(post_params)
+      redirect_to account_posts_path(current_user)
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @group = Group.find(params[:group_id])
+    @post=@group.posts.find(params[:id])
+    @post.destroy
+    redirect_to account_posts_path(current_user)
+  end
+
 
   private
 
